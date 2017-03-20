@@ -8,7 +8,7 @@ int LT2 = 9;
 int ENR = 5;
 int ENL = 11;
 //speed of the motor.
-int SPD = 150;
+int SPD = 115;
 //initials for line detection.
 int left, mid, right;
 //function to move forward.
@@ -66,23 +66,15 @@ void setup(){
 void loop() {
 //lable hell.
 hell:
-        left = digitalRead(10);
+        //'1' means detection is true
+        right = digitalRead(10);
         mid = digitalRead(4);
-        right = digitalRead(2);
-        if(mid == 0 && left && right) {
-                moveForward();
-                goto hell;
+        left = digitalRead(2);
+        if(mid == 1 && left == 0 && right == 0){
+          moveForward();
+          goto hell;
         }
-        else if(right == 0 && mid == 0 && left) {
-                turnLeft();
-                goto hell;
-        }
-        else if(left == 0 && mid = 0 && right) {
-                turnRight();
-                goto hell;
-        }
-        else{
-                moveForward();
-                goto hell;
+        if(left = 1 && right == 0){
+          
         }
 }
