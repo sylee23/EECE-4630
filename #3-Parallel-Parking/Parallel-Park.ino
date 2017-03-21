@@ -205,7 +205,7 @@ work:                           moveForward();
                                        goto die
         }
 }
-//setup the initials
+//setup the initials.
 void setup(){
         Serial.begin(9600);
         pinMode(RT1,OUTPUT);
@@ -222,8 +222,70 @@ void setup(){
         pinMode(backIN,INPUT);
         stop();
 }
-//loop of the program
+//loop of the program.
 void loop(){
+        //get the detection.
         leftDistance = leftDistanceMeasure();
-        detectWall3();
+        frontDistance = frontDistanceMeasure();
+        backDistance = backDistanceMeasure();
+        //stop at the second box.
+        int i = 0;
+        int distance = 5;
+hell:
+        while(1) {
+                if(leftDistance > distance) {
+                        moveForward();
+                        while(1) {
+                                leftDistance = leftDistanceMeasure();
+                                if(leftDistance < distance) {
+                                        moveForward();
+                                        while(1) {
+                                                leftDistance = leftDistanceMeasure();
+                                                if(leftDistance > distance) {
+                                                        moveForward();
+                                                        while(1) {
+                                                                leftDistance = leftDistanceMeasure();
+                                                                if(leftDistance < distance) {
+                                                                        stop();
+                                                                        break hell;
+                                                                }
+                                                                else{
+                                                                        moveForward();
+                                                                }
+                                                        }
+                                                }
+                                                else{
+                                                        moveForward();
+                                                }
+                                        }
+                                }
+                                else{
+                                        moveForward();
+                                }
+                        }
+                }
+        }
+}
+//another thought
+void loop(){
+        //get the detection.
+        leftDistance = leftDistanceMeasure();
+        frontDistance = frontDistanceMeasure();
+        backDistance = backDistanceMeasure();
+        //stop at the second box.
+        int distance[10000];
+        int diff = 0;
+        int range = 5;
+        int i = 0;
+        int g = 0;
+        for(i < 10000; i++){
+          leftDistance = leftDistanceMeasure();
+          distance[i] = leftDistance;
+          diff = distance[i] - distance[i-1];
+          diff = abs(diff);
+          if(diff > 5){
+            g++;
+          }
+          if(g = )
+        }
 }
