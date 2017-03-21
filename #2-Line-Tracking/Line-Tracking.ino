@@ -66,15 +66,65 @@ void setup(){
 void loop() {
 //lable hell.
 hell:
-        //'1' means detection is true
+        //'1' means detection is true.
+        //get detection.
         right = digitalRead(10);
         mid = digitalRead(4);
         left = digitalRead(2);
-        if(mid == 1 && left == 0 && right == 0){
-          moveForward();
-          goto hell;
+        //go forward if only mid has detection.
+        if(mid == 1 && left == 0 && right == 0) {
+                moveForward();
+                goto hell;
         }
-        if(left = 1 && right == 0){
-          
+        //discard mid, turn left if left has detection.
+        if(left == 1 && right == 0) {
+                turnLeft();
+                goto hell;
+        }
+        //dicard mid, turn right if right has detection.
+        if(left ==0 && right == 1) {
+                turnRight();
+                goto hell;
+        }
+        //deal with intersection, go forward if all the sensor has detection.
+        if(mid == 1 && left == 1 && right == 1) {
+                moveForward();
+                goto hell;
+        }
+        if(mid == 0 && left == 0 && right == 0) {
+                moveBackward();
+                goto hell;
+        }
+}
+//get rid of 'goto'
+void loop(){
+        //'1' means detection is true.
+        //get detection.
+        right = digitalRead(10);
+        mid = digitalRead(4);
+        left = digitalRead(2);
+        //go forward if only mid has detection.
+        if(mid == 1 && left == 0 && right == 0) {
+                moveForward();
+                break;
+        }
+        //discard mid, turn left if left has detection.
+        if(left == 1 && right == 0) {
+                turnLeft();
+                break;
+        }
+        //dicard mid, turn right if right has detection.
+        if(left ==0 && right == 1) {
+                turnRight();
+                break;
+        }
+        //deal with intersection, go forward if all the sensor has detection.
+        if(mid == 1 && left == 1 && right == 1) {
+                moveForward();
+                break;
+        }
+        if(mid == 0 && left == 0 && right == 0) {
+                moveBackward();
+                break;
         }
 }
