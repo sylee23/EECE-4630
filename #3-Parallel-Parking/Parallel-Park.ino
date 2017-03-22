@@ -157,7 +157,7 @@ void detectWall()
                         Serial.println("New i: ");
                         Serial.println(i);
                 }
-                //if car has not meet the seconde box then go forward.
+                //if car has not meet the second box then go forward.
                 else
                 {
                         moveForward();
@@ -171,6 +171,32 @@ void detectWall()
         //stop when function is finished.
         stop();
 }
+//function to park the car.
+void park()
+{
+        //adjust to the angle for backward.
+        turnRight();
+        delay(300);
+        //as long as there's space keep backward.
+        while (1)
+        {
+                //get detection
+                leftDistance = leftDistanceMeasure();
+                backDistance = backDistanceMeasure();
+                if (leftDistance < 5 || backDistance < 5)
+                {
+                        stop();
+                        turnLeft();
+                        delay(300);
+                        break;
+                }
+                else
+                {
+                        moveBackward();
+                }
+        }
+        stop();
+}
 //loop of the program.
 void loop()
 {
@@ -179,4 +205,5 @@ void loop()
         frontDistance = frontDistanceMeasure();
         backDistance = backDistanceMeasure();
         detectWall();
+        park();
 }
