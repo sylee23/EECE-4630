@@ -23,93 +23,104 @@ int max = 30;
 int mid = 15;
 int min = 10;
 //function to move forward.
-void moveForward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void moveForward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to move backward.
-void moveBackward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void moveBackward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to turn right.
-void turnRight(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void turnRight()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to turn left
-void turnLeft(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void turnLeft()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to stop.
-void stop(){
-        digitalWrite(ENR,LOW);
-        digitalWrite(ENL,LOW);
+void stop()
+{
+        digitalWrite(ENR, LOW);
+        digitalWrite(ENL, LOW);
 }
 //function to measure front distance.
-int frontDistanceMeasure(){
-        digitalWrite(frontOUT,LOW);
+int frontDistanceMeasure()
+{
+        digitalWrite(frontOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(frontOUT,HIGH);
+        digitalWrite(frontOUT, HIGH);
         delayMicroseconds(10);
-        digitalWrite(frontOUT,LOW);
-        float fDistance = pulseIn(frontIN,HIGH);
-        fDistance = fDistance/58;
+        digitalWrite(frontOUT, LOW);
+        float fDistance = pulseIn(frontIN, HIGH);
+        fDistance = fDistance / 58;
         return (int)fDistance;
 }
 //function to measure left distance.
-int leftDistanceMeasure(){
-        digitalWrite(leftOUT,LOW);
+int leftDistanceMeasure()
+{
+        digitalWrite(leftOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(leftOUT,HIGH);
+        digitalWrite(leftOUT, HIGH);
         delayMicroseconds(10);
-        digitalWrite(leftOUT,LOW);
-        float lDistance = pulseIn(leftIN,HIGH);
-        lDistance = lDistance/58;
+        digitalWrite(leftOUT, LOW);
+        float lDistance = pulseIn(leftIN, HIGH);
+        lDistance = lDistance / 58;
         return (int)lDistance;
 }
 //setup the initials.
-void setup(){
+void setup()
+{
         Serial.begin(9600);
-        pinMode(RT1,OUTPUT);
-        pinMode(RT2,OUTPUT);
-        pinMode(LT1,OUTPUT);
-        pinMode(LT2,OUTPUT);
-        pinMode(ENR,OUTPUT);
-        pinMode(ENL,OUTPUT);
-        pinMode(frontOUT,OUTPUT);
-        pinMode(frontIN,INPUT);
-        pinMode(leftOUT,OUTPUT);
-        pinMode(leftIN,INPUT);
+        pinMode(RT1, OUTPUT);
+        pinMode(RT2, OUTPUT);
+        pinMode(LT1, OUTPUT);
+        pinMode(LT2, OUTPUT);
+        pinMode(ENR, OUTPUT);
+        pinMode(ENL, OUTPUT);
+        pinMode(frontOUT, OUTPUT);
+        pinMode(frontIN, INPUT);
+        pinMode(leftOUT, OUTPUT);
+        pinMode(leftIN, INPUT);
         stop();
 }
 //loop of the program.
-void loop(){
+void loop()
+{
 //lable hell.
 hell:
         frontDistance = frontDistanceMeasure();
         leftDistance = leftDistanceMeasure();
         //when there's no wall in front
-        if(frontDistance > max) {
+        if (frontDistance > max)
+        {
                 //if car is too close to the wall.
-                if(leftDistance < min) {
+                if (leftDistance < min)
+                {
                         turnRight();
                         delay(50);
                         moveForward();
@@ -117,12 +128,14 @@ hell:
                         goto hell;
                 }
                 //if car is not too far nor too close to the wall.
-                else if(leftDistance > min && leftDistance < mid) {
+                else if (leftDistance > min && leftDistance < mid)
+                {
                         moveForward();
                         goto hell;
                 }
                 //if car is too far to the wall.
-                else if(leftDistance > mid) {
+                else if (leftDistance > mid)
+                {
                         turnLeft();
                         delay(50);
                         moveForward();
@@ -131,13 +144,15 @@ hell:
                 }
         }
         //if there's a wall in front.
-        else if(frontDistance <= max) {
+        else if (frontDistance <= max)
+        {
                 turnRight();
                 delay(600);
                 goto hell;
         }
         //nothing happen.
-        else{
+        else
+        {
                 moveForward();
                 goto hell;
         }

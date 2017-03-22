@@ -22,116 +22,130 @@ int frontDistance = 0;
 int leftDistance = 0;
 int rightDistance = 0;
 //function to move forward
-void MoveForward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void MoveForward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to move backward
-void MoveBackward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void MoveBackward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to turn right
-void TurnRight(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void TurnRight()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to turn left
-void TurnLeft(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void TurnLeft()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to stop
-void Stop(){
-        digitalWrite(ENR,LOW);
-        digitalWrite(ENL,LOW);
+void Stop()
+{
+        digitalWrite(ENR, LOW);
+        digitalWrite(ENL, LOW);
 }
 //function to measure right distance
-int frontDistanceMeasure(){
-        digitalWrite(frontOUT,LOW);
+int frontDistanceMeasure()
+{
+        digitalWrite(frontOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(frontOUT,HIGH);
+        digitalWrite(frontOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(frontOUT,LOW);
-        float fDistance = pulseIn(frontIN,HIGH);
-        fDistance = fDistance/58;
+        digitalWrite(frontOUT, LOW);
+        float fDistance = pulseIn(frontIN, HIGH);
+        fDistance = fDistance / 58;
         return (int)fDistance;
 }
 //function to measure left distance
-int leftDistanceMeasure(){
-        digitalWrite(leftOUT,LOW);
+int leftDistanceMeasure()
+{
+        digitalWrite(leftOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(leftOUT,HIGH);
+        digitalWrite(leftOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(leftOUT,LOW);
-        float lDistance = pulseIn(leftIN,HIGH);
-        lDistance = lDistance/58;
+        digitalWrite(leftOUT, LOW);
+        float lDistance = pulseIn(leftIN, HIGH);
+        lDistance = lDistance / 58;
         return (int)lDistance;
 }
 //function to measure right distance
-int rightDistanceMeasure(){
-        digitalWrite(rightOUT,LOW);
+int rightDistanceMeasure()
+{
+        digitalWrite(rightOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(rightOUT,HIGH);
+        digitalWrite(rightOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(rightOUT,LOW);
-        float rDistance = pulseIn(rightIN,HIGH);
-        rDistance = rDistance/58;
+        digitalWrite(rightOUT, LOW);
+        float rDistance = pulseIn(rightIN, HIGH);
+        rDistance = rDistance / 58;
         return (int)rDistance;
 }
 //setup the initials
-void setup(){
+void setup()
+{
         Serial.begin(9600);
-        pinMode(RT1,OUTPUT);
-        pinMode(RT2,OUTPUT);
-        pinMode(LT1,OUTPUT);
-        pinMode(LT2,OUTPUT);
-        pinMode(ENR,OUTPUT);
-        pinMode(ENL,OUTPUT);
-        pinMode(frontOUT,OUTPUT);
-        pinMode(frontIN,INPUT);
-        pinMode(leftOUT,OUTPUT);
-        pinMode(leftIN,INPUT);
-        pinMode(rightOUT,OUTPUT);
-        pinMode(rightIN,INPUT);
+        pinMode(RT1, OUTPUT);
+        pinMode(RT2, OUTPUT);
+        pinMode(LT1, OUTPUT);
+        pinMode(LT2, OUTPUT);
+        pinMode(ENR, OUTPUT);
+        pinMode(ENL, OUTPUT);
+        pinMode(frontOUT, OUTPUT);
+        pinMode(frontIN, INPUT);
+        pinMode(leftOUT, OUTPUT);
+        pinMode(leftIN, INPUT);
+        pinMode(rightOUT, OUTPUT);
+        pinMode(rightIN, INPUT);
         Stop();
 }
 //loop of the program
-void loop(){
+void loop()
+{
 //main label
 main:
         frontDistance = frontDistanceMeasure();
         leftDistance = leftDistanceMeasure();
-        rightDistance = rightDistanceMeasure();        
-        if(leftDistance < 15) {
+        rightDistance = rightDistanceMeasure();
+        if (leftDistance < 15)
+        {
                 TurnLeft();
                 goto main;
         }
-        if(rightDistance < 15) {
+        if (rightDistance < 15)
+        {
                 TurnRight();
                 goto main;
         }
-        if(frontDistance < 15) {
+        if (frontDistance < 15)
+        {
                 Stop();
                 goto main;
         }
-        else{
+        else
+        {
                 MoveForward();
                 goto main;
         }
