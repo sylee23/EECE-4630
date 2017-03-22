@@ -25,135 +25,145 @@ int leftDistance = 0;
 int left2Distance = 0;
 int backDistance = 0;
 //function to move forward
-void MoveForward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void MoveForward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to move backward
-void MoveBackward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void MoveBackward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to turn left2
-void Turnright(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void Turnright()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to turn left
-void TurnLeft(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void TurnLeft()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to stop
-void Stop(){
-        digitalWrite(ENR,LOW);
-        digitalWrite(ENL,LOW);
+void Stop()
+{
+        digitalWrite(ENR, LOW);
+        digitalWrite(ENL, LOW);
 }
 //function to measure left2 distance
-int frontDistanceMeasure(){
-        digitalWrite(frontOUT,LOW);
+int frontDistanceMeasure()
+{
+        digitalWrite(frontOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(frontOUT,HIGH);
+        digitalWrite(frontOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(frontOUT,LOW);
-        float fDistance = pulseIn(frontIN,HIGH);
-        fDistance = fDistance/58;
+        digitalWrite(frontOUT, LOW);
+        float fDistance = pulseIn(frontIN, HIGH);
+        fDistance = fDistance / 58;
         return (int)fDistance;
 }
 //function to measure left distance
-int leftDistanceMeasure(){
-        digitalWrite(leftOUT,LOW);
+int leftDistanceMeasure()
+{
+        digitalWrite(leftOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(leftOUT,HIGH);
+        digitalWrite(leftOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(leftOUT,LOW);
-        float lDistance = pulseIn(leftIN,HIGH);
-        lDistance = lDistance/58;
+        digitalWrite(leftOUT, LOW);
+        float lDistance = pulseIn(leftIN, HIGH);
+        lDistance = lDistance / 58;
         return (int)lDistance;
 }
 //function to measure left2 distance
-int left2DistanceMeasure(){
-        digitalWrite(left2OUT,LOW);
+int left2DistanceMeasure()
+{
+        digitalWrite(left2OUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(left2OUT,HIGH);
+        digitalWrite(left2OUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(left2OUT,LOW);
-        float l2Distance = pulseIn(left2IN,HIGH);
-        l2Distance = l2Distance/58;
+        digitalWrite(left2OUT, LOW);
+        float l2Distance = pulseIn(left2IN, HIGH);
+        l2Distance = l2Distance / 58;
         return (int)l2Distance;
 }
 //function to measure back distance
-int backDistanceMeasure(){
-        digitalWrite(backOUT,LOW);
+int backDistanceMeasure()
+{
+        digitalWrite(backOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(backOUT,HIGH);
+        digitalWrite(backOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(backOUT,LOW);
-        float bDistance = pulseIn(backIN,HIGH);
-        bDistance = bDistance/58;
+        digitalWrite(backOUT, LOW);
+        float bDistance = pulseIn(backIN, HIGH);
+        bDistance = bDistance / 58;
         return (int)bDistance;
 }
 //setup the initials
-void setup(){
+void setup()
+{
         Serial.begin(9600);
-        pinMode(RT1,OUTPUT);
-        pinMode(RT2,OUTPUT);
-        pinMode(LT1,OUTPUT);
-        pinMode(LT2,OUTPUT);
-        pinMode(ENR,OUTPUT);
-        pinMode(ENL,OUTPUT);
-        pinMode(frontOUT,OUTPUT);
-        pinMode(frontIN,INPUT);
-        pinMode(leftOUT,OUTPUT);
-        pinMode(leftIN,INPUT);
-        pinMode(left2OUT,OUTPUT);
-        pinMode(left2IN,INPUT);
-        pinMode(backOUT,OUTPUT);
-        pinMode(backIN,INPUT);
+        pinMode(RT1, OUTPUT);
+        pinMode(RT2, OUTPUT);
+        pinMode(LT1, OUTPUT);
+        pinMode(LT2, OUTPUT);
+        pinMode(ENR, OUTPUT);
+        pinMode(ENL, OUTPUT);
+        pinMode(frontOUT, OUTPUT);
+        pinMode(frontIN, INPUT);
+        pinMode(leftOUT, OUTPUT);
+        pinMode(leftIN, INPUT);
+        pinMode(left2OUT, OUTPUT);
+        pinMode(left2IN, INPUT);
+        pinMode(backOUT, OUTPUT);
+        pinMode(backIN, INPUT);
         Stop();
 }
 //loop of the program
-void loop(){
-//lable hell
-hell:
+void loop()
+{
+        //lable hell
         frontDistance = frontDistanceMeasure();
         leftDistance = leftDistanceMeasure();
         left2Distance = left2DistanceMeasure();
         backDistance = backDistanceMeasure();
-        if(leftDistance < 15) {
+        if (leftDistance < 15)
+        {
                 TurnLeft();
-                goto hell;
         }
-        if(left2Distance < 15) {
+        if (left2Distance < 15)
+        {
                 Turnright();
-                goto hell;
         }
-        if(frontDistance < 15) {
+        if (frontDistance < 15)
+        {
                 MoveBackward();
-                goto hell;
         }
-        if(backDistance < 15) {
+        if (backDistance < 15)
+        {
                 Stop();
-                goto hell;
         }
-        else{
+        else
+        {
                 MoveForward();
-                goto hell;
         }
 }
