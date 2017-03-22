@@ -1,5 +1,4 @@
-//Wall Following v1.0
-//pins of right motors.
+//Test code.
 int RT1 = 6;
 int RT2 = 7;
 //pins of left motors.
@@ -15,16 +14,12 @@ int frontOUT = A5;
 int frontIN = A4;
 int leftOUT = A3;
 int leftIN = A2;
-int leftOUT2 = A1;
-int leftIN2 = A0;
+int rightOUT = A1;
+int rightIN = A0;
 //initials for the distance.
 int frontDistance = 0;
 int leftDistance = 0;
-int leftDistance2 = 0;
-//value need later.
-int max = 50;
-int mid = 15;
-int min = 10;
+int rightDistance = 0;
 //function to move forward.
 void moveForward()
 {
@@ -96,16 +91,16 @@ int leftDistanceMeasure()
         return (int)lDistance;
 }
 //function to measure right distance.
-int leftDistanceMeasure2()
+int rightDistanceMeasure()
 {
-        digitalWrite(leftOUT2, LOW);
+        digitalWrite(rightOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(leftOUT2, HIGH);
+        digitalWrite(rightOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(leftOUT2, LOW);
-        float l2Distance = pulseIn(leftIN2, HIGH);
-        l2Distance = l2Distance / 58;
-        return (int)l2Distance;
+        digitalWrite(rightOUT, LOW);
+        float rDistance = pulseIn(rightIN, HIGH);
+        rDistance = rDistance / 58;
+        return (int)rDistance;
 }
 //setup the initials.
 void setup()
@@ -121,79 +116,34 @@ void setup()
         pinMode(frontIN, INPUT);
         pinMode(leftOUT, OUTPUT);
         pinMode(leftIN, INPUT);
-        pinMode(leftOUT2, OUTPUT);
-        pinMode(leftIN2, INPUT);
+        pinMode(rightOUT, OUTPUT);
+        pinMode(rightIN, INPUT);
         stop();
 }
 //loop of the program.
 void loop()
 {
-//lable hell.
-hell:
+//lable main.
+main:
         frontDistance = frontDistanceMeasure();
         leftDistance = leftDistanceMeasure();
-        leftDistance2 = leftDistanceMeasure2();
-        //when there's no wall in front.
-        if (frontDistance > 20)
+        rightDistance = rightDistanceMeasure();
+        if (leftDistance < 15)
         {
-                //if there's a wall on the left.
-                if (leftDistance < max)
-                {
-                        //if car is too close to the wall.
-                        if (leftDistance < min)
-                        {
-                                turnRight();
-                                delay(100);
-                                moveForward();
-                                delay(100);
-                                goto hell;
-                        }
-                        //if car is at right distacnce.
-                        else if (leftDistance > min && leftDistance < mid)
-                        {
-                                moveForward();
-                                goto hell;
-                        }
-                        //if car is too far to the wall.
-                        else if (leftDistance > mid)
-                        {
-                                turnLeft();
-                                delay(100);
-                                moveForward();
-                                delay(100);
-                                goto hell;
-                        }
-                }
-                //if the first left sensor has move out of the left wall.
-                else if (leftDistance > max)
-                {
-                        //if the second left sensor have move out of the left wall.
-                        if (leftDistance2 > max)
-                        {
-                                turnLeft();
-                                delay(600);
-                                moveForward();
-                                delay(500);
-                                goto hell;
-                        }
-                        //if the second left snsor can still detect the wall.
-                        else if (leftDistance2 < max)
-                        {
-                                moveForward();
-                                goto hell;
-                        }
-                }
+                turnLeft();
+                goto main;
         }
-        //if there's a wall in front.
-        else if (frontDistance <= 20)
+        if (frontDistance < 15)
         {
-                turnRight();
-                goto hell;
+                stop();
+                goto main;
         }
-        //if nothing happen.
-        else
+        if (leftDistance > 15 && frontDistance > 15)
         {
                 moveForward();
-                goto hell;
+                goto main;
+        }
+        else{
+                turnRight();
         }
 }

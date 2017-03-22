@@ -1,4 +1,5 @@
-//Test Run.
+//Wall Following v2.0
+//This is the final version. Two sensors are enabled in this version. 
 //pins of right motors.
 int RT1 = 6;
 int RT2 = 7;
@@ -9,20 +10,21 @@ int LT2 = 9;
 int ENR = 5;
 int ENL = 11;
 //speed of the motor.
-int SPD = 120;
+int SPD = 115;
 //distance sensor, OUT to send the wave, IN to receive.
 int frontOUT = A5;
 int frontIN = A4;
 int leftOUT = A3;
 int leftIN = A2;
-int rightOUT = A1;
-int rightIN = A0;
 //initials for the distance.
 int frontDistance = 0;
 int leftDistance = 0;
-int rightDistance = 0;
+//value need later.
+int max = 30;
+int mid = 15;
+int min = 10;
 //function to move forward.
-void MoveForward()
+void moveForward()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -32,7 +34,7 @@ void MoveForward()
         digitalWrite(LT2, HIGH);
 }
 //function to move backward.
-void MoveBackward()
+void moveBackward()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -42,7 +44,7 @@ void MoveBackward()
         digitalWrite(LT2, LOW);
 }
 //function to turn right.
-void TurnRight()
+void turnRight()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -51,8 +53,8 @@ void TurnRight()
         digitalWrite(LT1, LOW);
         digitalWrite(LT2, HIGH);
 }
-//function to turn left.
-void TurnLeft()
+//function to turn left
+void turnLeft()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -62,18 +64,18 @@ void TurnLeft()
         digitalWrite(LT2, LOW);
 }
 //function to stop.
-void Stop()
+void stop()
 {
         digitalWrite(ENR, LOW);
         digitalWrite(ENL, LOW);
 }
-//function to measure right distance.
+//function to measure front distance.
 int frontDistanceMeasure()
 {
         digitalWrite(frontOUT, LOW);
         delayMicroseconds(2);
         digitalWrite(frontOUT, HIGH);
-        delayMicroseconds(20);
+        delayMicroseconds(10);
         digitalWrite(frontOUT, LOW);
         float fDistance = pulseIn(frontIN, HIGH);
         fDistance = fDistance / 58;
@@ -85,25 +87,13 @@ int leftDistanceMeasure()
         digitalWrite(leftOUT, LOW);
         delayMicroseconds(2);
         digitalWrite(leftOUT, HIGH);
-        delayMicroseconds(20);
+        delayMicroseconds(10);
         digitalWrite(leftOUT, LOW);
         float lDistance = pulseIn(leftIN, HIGH);
         lDistance = lDistance / 58;
         return (int)lDistance;
 }
-//function to measure right distance.
-int rightDistanceMeasure()
-{
-        digitalWrite(rightOUT, LOW);
-        delayMicroseconds(2);
-        digitalWrite(rightOUT, HIGH);
-        delayMicroseconds(20);
-        digitalWrite(rightOUT, LOW);
-        float rDistance = pulseIn(rightIN, HIGH);
-        rDistance = rDistance / 58;
-        return (int)rDistance;
-}
-//setup the initials
+//setup the initials.
 void setup()
 {
         Serial.begin(9600);
@@ -117,36 +107,54 @@ void setup()
         pinMode(frontIN, INPUT);
         pinMode(leftOUT, OUTPUT);
         pinMode(leftIN, INPUT);
-        pinMode(rightOUT, OUTPUT);
-        pinMode(rightIN, INPUT);
-        Stop();
+        stop();
 }
 //loop of the program.
 void loop()
 {
-//main label.
-main:
+//lable hell.
+hell:
         frontDistance = frontDistanceMeasure();
         leftDistance = leftDistanceMeasure();
-        rightDistance = rightDistanceMeasure();
-        if (leftDistance < 15)
+        //when there's no wall in front
+        if (frontDistance > max)
         {
-                TurnLeft();
-                goto main;
+                //if car is too close to the wall.
+                if (leftDistance < min)
+                {
+                        turnRight();
+                        delay(50);
+                        moveForward();
+                        delay(50);
+                        goto hell;
+                }
+                //if car is not too far nor too close to the wall.
+                else if (leftDistance > min && leftDistance < mid)
+                {
+                        moveForward();
+                        goto hell;
+                }
+                //if car is too far to the wall.
+                else if (leftDistance > mid)
+                {
+                        turnLeft();
+                        delay(50);
+                        moveForward();
+                        delay(50);
+                        goto hell;
+                }
         }
-        if (rightDistance < 15)
+        //if there's a wall in front.
+        else if (frontDistance <= max)
         {
-                TurnRight();
-                goto main;
+                turnRight();
+                delay(600);
+                goto hell;
         }
-        if (frontDistance < 15)
-        {
-                Stop();
-                goto main;
-        }
+        //nothing happen.
         else
         {
-                MoveForward();
-                goto main;
+                moveForward();
+                goto hell;
         }
 }
