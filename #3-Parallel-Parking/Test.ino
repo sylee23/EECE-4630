@@ -1,31 +1,28 @@
-//Test Run
-//pins of right motors
+//Test code.
+//pins of right motors.
 int RT1 = 6;
 int RT2 = 7;
-//pins of left motors
+//pins of left motors.
 int LT1 = 8;
 int LT2 = 9;
-//pins to enable motors
+//pins to enable motors.
 int ENR = 5;
 int ENL = 11;
-//speed of the motor
-int SPD = 120;
-//distance sensor, OUT to send the wave, IN to receive
+//speed of the motor.
+int SPD = 115;
+//distance sensor, OUT to send the wave, IN to receive.
 int frontOUT = A5;
 int frontIN = A4;
 int leftOUT = A3;
 int leftIN = A2;
-int left2OUT = A1;
-int left2IN = A0;
-int backOUT = 3;
-int backIN = 2;
-//initials for the distance
+int backOUT = A1;
+int backIN = A0;
+//initials for the distance.
 int frontDistance = 0;
 int leftDistance = 0;
-int left2Distance = 0;
 int backDistance = 0;
-//function to move forward
-void MoveForward()
+//function to move forward.
+void moveForward()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -34,8 +31,8 @@ void MoveForward()
         digitalWrite(LT1, LOW);
         digitalWrite(LT2, HIGH);
 }
-//function to move backward
-void MoveBackward()
+//function to move backward.
+void moveBackward()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -44,8 +41,8 @@ void MoveBackward()
         digitalWrite(LT1, HIGH);
         digitalWrite(LT2, LOW);
 }
-//function to turn left2
-void Turnright()
+//function to turn right.
+void turnRight()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -54,8 +51,8 @@ void Turnright()
         digitalWrite(LT1, LOW);
         digitalWrite(LT2, HIGH);
 }
-//function to turn left
-void TurnLeft()
+//function to turn left.
+void turnLeft()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -64,25 +61,25 @@ void TurnLeft()
         digitalWrite(LT1, HIGH);
         digitalWrite(LT2, LOW);
 }
-//function to stop
-void Stop()
+//function to stop.
+void stop()
 {
         digitalWrite(ENR, LOW);
         digitalWrite(ENL, LOW);
 }
-//function to measure left2 distance
+//function to measure front distance.
 int frontDistanceMeasure()
 {
         digitalWrite(frontOUT, LOW);
         delayMicroseconds(2);
         digitalWrite(frontOUT, HIGH);
-        delayMicroseconds(20);
+        delayMicroseconds(10);
         digitalWrite(frontOUT, LOW);
         float fDistance = pulseIn(frontIN, HIGH);
         fDistance = fDistance / 58;
         return (int)fDistance;
 }
-//function to measure left distance
+//function to measure left distance.
 int leftDistanceMeasure()
 {
         digitalWrite(leftOUT, LOW);
@@ -94,19 +91,7 @@ int leftDistanceMeasure()
         lDistance = lDistance / 58;
         return (int)lDistance;
 }
-//function to measure left2 distance
-int left2DistanceMeasure()
-{
-        digitalWrite(left2OUT, LOW);
-        delayMicroseconds(2);
-        digitalWrite(left2OUT, HIGH);
-        delayMicroseconds(20);
-        digitalWrite(left2OUT, LOW);
-        float l2Distance = pulseIn(left2IN, HIGH);
-        l2Distance = l2Distance / 58;
-        return (int)l2Distance;
-}
-//function to measure back distance
+//function to measure back distance.
 int backDistanceMeasure()
 {
         digitalWrite(backOUT, LOW);
@@ -118,7 +103,7 @@ int backDistanceMeasure()
         bDistance = bDistance / 58;
         return (int)bDistance;
 }
-//setup the initials
+//setup the initials.
 void setup()
 {
         Serial.begin(9600);
@@ -132,38 +117,35 @@ void setup()
         pinMode(frontIN, INPUT);
         pinMode(leftOUT, OUTPUT);
         pinMode(leftIN, INPUT);
-        pinMode(left2OUT, OUTPUT);
-        pinMode(left2IN, INPUT);
         pinMode(backOUT, OUTPUT);
         pinMode(backIN, INPUT);
-        Stop();
+        stop();
 }
-//loop of the program
+//loop of the program.
 void loop()
 {
-        //lable hell
-        frontDistance = frontDistanceMeasure();
+        //get the detection.
         leftDistance = leftDistanceMeasure();
-        left2Distance = left2DistanceMeasure();
+        frontDistance = frontDistanceMeasure();
         backDistance = backDistanceMeasure();
-        if (leftDistance < 15)
+        if (leftDistance < 10)
         {
-                TurnLeft();
+                turnLeft() :
         }
-        if (left2Distance < 15)
+        if (frontDistance < 10)
         {
-                Turnright();
+                moveBackward();
         }
-        if (frontDistance < 15)
+        if (backDistance < 10)
         {
-                MoveBackward();
+                stop();
         }
-        if (backDistance < 15)
+        if (leftDistance < 10 && frontDistance < 10 && backDistance < 10)
         {
-                Stop();
+                turnRight() :
         }
         else
         {
-                MoveForward();
+                moveForward() :
         }
 }

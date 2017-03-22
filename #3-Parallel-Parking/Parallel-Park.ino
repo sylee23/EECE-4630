@@ -197,6 +197,17 @@ void park()
         }
         stop();
 }
+//function to move the car out of the spot.
+void moveOut(){
+        turnRight();
+        delay(300);
+        moveForward();
+        delay(600);
+        turnLeft(300);
+        moveForward();
+        delay(600);
+        stop();
+}
 //loop of the program.
 void loop()
 {
@@ -204,6 +215,9 @@ void loop()
         leftDistance = leftDistanceMeasure();
         frontDistance = frontDistanceMeasure();
         backDistance = backDistanceMeasure();
+        moveForward();
         detectWall();
         park();
+        moveOut();
+        stop();
 }
