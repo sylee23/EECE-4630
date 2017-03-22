@@ -22,97 +22,134 @@ int frontDistance = 0;
 int leftDistance = 0;
 int backDistance = 0;
 //function to move forward.
-void moveForward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void moveForward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to move backward.
-void moveBackward(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void moveBackward()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to turn right.
-void turnRight(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,LOW);
-        digitalWrite(RT2,HIGH);
-        digitalWrite(LT1,LOW);
-        digitalWrite(LT2,HIGH);
+void turnRight()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, LOW);
+        digitalWrite(RT2, HIGH);
+        digitalWrite(LT1, LOW);
+        digitalWrite(LT2, HIGH);
 }
 //function to turn left.
-void turnLeft(){
-        analogWrite(ENR,SPD);
-        analogWrite(ENL,SPD);
-        digitalWrite(RT1,HIGH);
-        digitalWrite(RT2,LOW);
-        digitalWrite(LT1,HIGH);
-        digitalWrite(LT2,LOW);
+void turnLeft()
+{
+        analogWrite(ENR, SPD);
+        analogWrite(ENL, SPD);
+        digitalWrite(RT1, HIGH);
+        digitalWrite(RT2, LOW);
+        digitalWrite(LT1, HIGH);
+        digitalWrite(LT2, LOW);
 }
 //function to stop.
-void stop(){
-        digitalWrite(ENR,LOW);
-        digitalWrite(ENL,LOW);
+void stop()
+{
+        digitalWrite(ENR, LOW);
+        digitalWrite(ENL, LOW);
 }
 //function to measure front distance.
-int frontDistanceMeasure(){
-        digitalWrite(frontOUT,LOW);
+int frontDistanceMeasure()
+{
+        digitalWrite(frontOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(frontOUT,HIGH);
+        digitalWrite(frontOUT, HIGH);
         delayMicroseconds(10);
-        digitalWrite(frontOUT,LOW);
-        float fDistance = pulseIn(frontIN,HIGH);
-        fDistance = fDistance/58;
+        digitalWrite(frontOUT, LOW);
+        float fDistance = pulseIn(frontIN, HIGH);
+        fDistance = fDistance / 58;
         return (int)fDistance;
 }
 //function to measure left distance.
-int leftDistanceMeasure(){
-        digitalWrite(leftOUT,LOW);
+int leftDistanceMeasure()
+{
+        digitalWrite(leftOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(leftOUT,HIGH);
+        digitalWrite(leftOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(leftOUT,LOW);
-        float lDistance = pulseIn(leftIN,HIGH);
-        lDistance = lDistance/58;
+        digitalWrite(leftOUT, LOW);
+        float lDistance = pulseIn(leftIN, HIGH);
+        lDistance = lDistance / 58;
         return (int)lDistance;
 }
 //function to measure back distance.
-int backDistanceMeasure(){
-        digitalWrite(backOUT,LOW);
+int backDistanceMeasure()
+{
+        digitalWrite(backOUT, LOW);
         delayMicroseconds(2);
-        digitalWrite(backOUT,HIGH);
+        digitalWrite(backOUT, HIGH);
         delayMicroseconds(20);
-        digitalWrite(backOUT,LOW);
-        float bDistance = pulseIn(backIN,HIGH);
-        bDistance = bDistance/58;
+        digitalWrite(backOUT, LOW);
+        float bDistance = pulseIn(backIN, HIGH);
+        bDistance = bDistance / 58;
         return (int)bDistance;
 }
+//setup the initials.
+void setup()
+{
+        Serial.begin(9600);
+        pinMode(RT1, OUTPUT);
+        pinMode(RT2, OUTPUT);
+        pinMode(LT1, OUTPUT);
+        pinMode(LT2, OUTPUT);
+        pinMode(ENR, OUTPUT);
+        pinMode(ENL, OUTPUT);
+        pinMode(frontOUT, OUTPUT);
+        pinMode(frontIN, INPUT);
+        pinMode(leftOUT, OUTPUT);
+        pinMode(leftIN, INPUT);
+        pinMode(backOUT, OUTPUT);
+        pinMode(backIN, INPUT);
+        stop();
+}
 //function to detect two walls and stop.
-void detectWall(){
+void detectWall()
+{
+        //current distance.
         int current = 0;
+        //previous distance.
         int previous = 0;
+        //difference of the distance.
         int diff = current - previous;
         int i = 0;
         moveForward();
         Serial.println(diff);
-        while(1) {
+        //detect the wall and stop at the second one.
+        while (1)
+        {
+                //get the distance.
                 current = leftDistanceMeasure();
                 Serial.println("Current distance: ");
                 Serial.println(current);
                 Serial.println("Previous distance: ");
                 Serial.println(previous);
-                if(i = 3) {
+                //if car meet the second box then stop.
+                if (i = 3)
+                {
                         break;
                 }
-                else if(diff > 5) {
+                //count every time car meet box.
+                else if (diff > 5)
+                {
                         moveForward();
                         Serial.println("Old i: ");
                         Serial.println(i);
@@ -120,36 +157,26 @@ void detectWall(){
                         Serial.println("New i: ");
                         Serial.println(i);
                 }
-                else{
+                //if car has not meet the seconde box then go forward.
+                else
+                {
                         moveForward();
                 }
+                //update previsou distance.
                 previous = current;
                 Serial.println("New previous distance: ");
                 Serial.println(previous);
+                Serial.println();
         }
-        stop();
-}
-//setup the initials.
-void setup(){
-        Serial.begin(9600);
-        pinMode(RT1,OUTPUT);
-        pinMode(RT2,OUTPUT);
-        pinMode(LT1,OUTPUT);
-        pinMode(LT2,OUTPUT);
-        pinMode(ENR,OUTPUT);
-        pinMode(ENL,OUTPUT);
-        pinMode(frontOUT,OUTPUT);
-        pinMode(frontIN,INPUT);
-        pinMode(leftOUT,OUTPUT);
-        pinMode(leftIN,INPUT);
-        pinMode(backOUT,OUTPUT);
-        pinMode(backIN,INPUT);
+        //stop when function is finished.
         stop();
 }
 //loop of the program.
-void loop(){
+void loop()
+{
         //get the detection.
         leftDistance = leftDistanceMeasure();
         frontDistance = frontDistanceMeasure();
         backDistance = backDistanceMeasure();
+        detectWall();
 }
