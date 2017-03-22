@@ -9,7 +9,7 @@ int LT2 = 9;
 int ENR = 5;
 int ENL = 11;
 //speed of the motor.
-int SPD = 150;
+int SPD = 115;
 //distance sensor, OUT to send the wave, IN to receive.
 int frontOUT = A5;
 int frontIN = A4;
@@ -97,113 +97,37 @@ int backDistanceMeasure(){
 }
 //function to detect two walls and stop.
 void detectWall(){
-        int range = 10;
-        int i = 1;
-        //as long as the second wall is not detected, stay in loop.
-        while(i != 4) {
-                moveForward();
-                int g = leftDistanceMeasure();
-                switch(i) {
-                //detection for the first wall, if detected, go to case 2, else stay in case 1.
-                case 1:
-                        if(g <= range) {
-                                i = 2;
-                                moveForward();
-                        }
-                        else{
-                                i = 1;
-                                moveForward();
-                        }
-                        break;
-                //detection for the gap between two walls, if dectected, go to case 3, else stay in case 2.
-                case 2:
-                        if(g >= range) {
-                                i = 3;
-                                moveForward();
-                        }
-                        else{
-                                i = 2;
-                                moveForward();
-                        }
-                        break;
-                //detection for the second wall, if detected, car will stop, else stay in case 3.
-                case 3:
-                        if(g <= range) {
-                                i = 4;
-                                stop();
-                        }
-                        else{
-                                i = 3;
-                                moveForward();
-                        }
+        int current = 0;
+        int previous = 0;
+        int diff = current - previous;
+        int i = 0;
+        moveForward();
+        Serial.println(diff);
+        while(1) {
+                current = leftDistanceMeasure();
+                Serial.println("Current distance: ");
+                Serial.println(current);
+                Serial.println("Previous distance: ");
+                Serial.println(previous);
+                if(i = 3) {
                         break;
                 }
-        }
-        stop();
-        delay(5000);
-}
-//an alter logic of wall detection.
-void detectWall2(){
-        int previous = 0;
-        int counter = 0;
-        while(counter != 4) {
-                int current = leftDistanceMeasure();
-                int difference = current - previous;
-                difference = abs(difference);
-                if (counter = 4) {
-                        exit(0);
+                else if(diff > 5) {
+                        moveForward();
+                        Serial.println("Old i: ");
+                        Serial.println(i);
+                        i++;
+                        Serial.println("New i: ");
+                        Serial.println(i);
                 }
                 else{
                         moveForward();
-                        if (difference > 5) {
-                                counter++;
-                                stop();
-                                delay(1000);
-                        }
-                        if (current - previous != 0) {
-                                previous = current;
-                        }
                 }
+                previous = current;
+                Serial.println("New previous distance: ");
+                Serial.println(previous);
         }
-}
-//third logic of wall detection.
-void detectWall3(){
-        int range = 10;
-        int leftDistance = leftDistanceMeasure();
-die:    moveForward();
-        if(leftDistance > range) {
-hell:           moveForward();
-                leftDistance = leftDistanceMeasure();
-                if(leftDistance > range) {
-                        moveForward();
-                        goto hell;
-                }
-                else if(leftDistance < range) {
-school:                 moveForward();
-                        leftDistance = leftDistanceMeasure();
-                        if(leftDistance < range) {
-                                moveForward();
-                                goto school;
-                        }
-                        else if(leftDistance > range) {
-work:                           moveForward();
-                                leftDistance = leftDistanceMeasure();
-                                if(leftDistance > range) {
-                                        moveForward();
-                                        goto work;
-                                }
-                                else if (leftDistance < range) {
-                                        stop();
-                                        delay(5000);
-                                }
-                        }
-                }
-        }
-        else{
-                moveForward();
-                leftDistance = leftDistanceMeasure() :
-                                       goto die
-        }
+        stop();
 }
 //setup the initials.
 void setup(){
@@ -228,64 +152,4 @@ void loop(){
         leftDistance = leftDistanceMeasure();
         frontDistance = frontDistanceMeasure();
         backDistance = backDistanceMeasure();
-        //stop at the second box.
-        int i = 0;
-        int distance = 5;
-hell:
-        while(1) {
-                if(leftDistance > distance) {
-                        moveForward();
-                        while(1) {
-                                leftDistance = leftDistanceMeasure();
-                                if(leftDistance < distance) {
-                                        moveForward();
-                                        while(1) {
-                                                leftDistance = leftDistanceMeasure();
-                                                if(leftDistance > distance) {
-                                                        moveForward();
-                                                        while(1) {
-                                                                leftDistance = leftDistanceMeasure();
-                                                                if(leftDistance < distance) {
-                                                                        stop();
-                                                                        break hell;
-                                                                }
-                                                                else{
-                                                                        moveForward();
-                                                                }
-                                                        }
-                                                }
-                                                else{
-                                                        moveForward();
-                                                }
-                                        }
-                                }
-                                else{
-                                        moveForward();
-                                }
-                        }
-                }
-        }
-}
-//another thought
-void loop(){
-        //get the detection.
-        leftDistance = leftDistanceMeasure();
-        frontDistance = frontDistanceMeasure();
-        backDistance = backDistanceMeasure();
-        //stop at the second box.
-        int distance[10000];
-        int diff = 0;
-        int range = 5;
-        int i = 0;
-        int g = 0;
-        for(i < 10000; i++){
-          leftDistance = leftDistanceMeasure();
-          distance[i] = leftDistance;
-          diff = distance[i] - distance[i-1];
-          diff = abs(diff);
-          if(diff > 5){
-            g++;
-          }
-          if(g = )
-        }
 }
