@@ -130,7 +130,7 @@ void loop()
         backDistance = backDistanceMeasure();
         if (leftDistance < 10)
         {
-                turnLeft() :
+                turnLeft();
         }
         if (frontDistance < 10)
         {
@@ -142,10 +142,10 @@ void loop()
         }
         if (leftDistance < 10 && frontDistance < 10 && backDistance < 10)
         {
-                turnRight() :
+                turnRight();
         }
         else
         {
-                moveForward() :
+                moveForward();
         }
 }
