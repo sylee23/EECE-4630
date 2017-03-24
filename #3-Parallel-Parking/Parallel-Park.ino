@@ -11,16 +11,17 @@ int ENL = 11;
 //speed of the motor.
 int SPD = 115;
 //distance sensor, OUT to send the wave, IN to receive.
-int frontOUT = A5;
-int frontIN = A4;
 int leftOUT = A3;
 int leftIN = A2;
 int backOUT = A1;
 int backIN = A0;
 //initials for the distance.
-int frontDistance = 0;
 int leftDistance = 0;
 int backDistance = 0;
+//initial counter for wall detection.
+int counter = 0;
+int previous = 0;
+int current = 0;
 //function to move forward.
 void moveForward()
 {
@@ -32,7 +33,7 @@ void moveForward()
         digitalWrite(LT2, HIGH);
 }
 //function to move backward.
-void moveBackward()
+void movebackward()
 {
         analogWrite(ENR, SPD);
         analogWrite(ENL, SPD);
@@ -67,18 +68,6 @@ void stop()
         digitalWrite(ENR, LOW);
         digitalWrite(ENL, LOW);
 }
-//function to measure front distance.
-int frontDistanceMeasure()
-{
-        digitalWrite(frontOUT, LOW);
-        delayMicroseconds(2);
-        digitalWrite(frontOUT, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(frontOUT, LOW);
-        float fDistance = pulseIn(frontIN, HIGH);
-        fDistance = fDistance / 58;
-        return (int)fDistance;
-}
 //function to measure left distance.
 int leftDistanceMeasure()
 {
@@ -103,7 +92,8 @@ int backDistanceMeasure()
         bDistance = bDistance / 58;
         return (int)bDistance;
 }
-//setup the initials.
+
+//setup the initials
 void setup()
 {
         Serial.begin(9600);
@@ -113,111 +103,93 @@ void setup()
         pinMode(LT2, OUTPUT);
         pinMode(ENR, OUTPUT);
         pinMode(ENL, OUTPUT);
-        pinMode(frontOUT, OUTPUT);
-        pinMode(frontIN, INPUT);
         pinMode(leftOUT, OUTPUT);
         pinMode(leftIN, INPUT);
         pinMode(backOUT, OUTPUT);
         pinMode(backIN, INPUT);
         stop();
 }
+
 //function to detect two walls and stop.
 void detectWall()
 {
-        //current distance.
-        int current = 0;
-        //previous distance.
-        int previous = 0;
-        //difference of the distance.
-        int diff = current - previous;
-        int i = 0;
-        moveForward();
-        Serial.println(diff);
-        //detect the wall and stop at the second one.
-        while (1)
+        //detect approach to box or far away from it
+        /*counter = 0; Initial status
+    counter = 1; Start moving forward, approach 1st box
+    counter = 2; reached 1st box, passing
+    counter = 3; exit 1st box, passing
+    current = 4; reach second box, stop*/
+        while (counter != 4)
         {
-                //get the distance.
                 current = leftDistanceMeasure();
-                Serial.println("Current distance: ");
-                Serial.println(current);
-                Serial.println("Previous distance: ");
-                Serial.println(previous);
-                //if car meet the second box then stop.
-                if (i = 3)
+                int difference = abs(current - previous);
+                // reach the box, exit box, and initially status
+                if (difference > 10)
                 {
-                        break;
-                }
-                //count every time car meet box.
-                else if (diff > 5)
-                {
+                        previous = current;
+                        counter++;
                         moveForward();
-                        Serial.println("Old i: ");
-                        Serial.println(i);
-                        i++;
-                        Serial.println("New i: ");
-                        Serial.println(i);
                 }
-                //if car has not meet the second box then go forward.
                 else
                 {
+                        previous = current;
                         moveForward();
                 }
-                //update previsou distance.
-                previous = current;
-                Serial.println("New previous distance: ");
-                Serial.println(previous);
-                Serial.println();
         }
-        //stop when function is finished.
-        stop();
 }
-//function to park the car.
+//function to move for more space to make turn.
+void back()
+{
+        movebackward();
+        delay(200);
+}
+//fucntion to make a right turn.
+void adjustright()
+{
+        turnRight();
+        delay(400);
+}
+//function to make a left turn.
+void adjustleft()
+{
+        turnLeft();
+        delay(400);
+}
+//function to move into the spot.
 void park()
 {
-        //adjust to the angle for backward.
-        turnRight();
-        delay(300);
-        //as long as there's space keep backward.
         while (1)
         {
-                //get detection
-                leftDistance = leftDistanceMeasure();
                 backDistance = backDistanceMeasure();
-                if (leftDistance < 5 || backDistance < 5)
+                //stop if there's no spcace in back.
+                if (backDistance < 12)
                 {
                         stop();
-                        turnLeft();
-                        delay(300);
+                        delay(1000);
                         break;
                 }
                 else
                 {
-                        moveBackward();
+                        movebackward();
                 }
         }
-        stop();
 }
-//function to move the car out of the spot.
-void moveOut(){
-        turnRight();
-        delay(300);
-        moveForward();
-        delay(600);
-        turnLeft(300);
-        moveForward();
-        delay(600);
-        stop();
-}
-//loop of the program.
+//loop of the program
 void loop()
 {
-        //get the detection.
-        leftDistance = leftDistanceMeasure();
-        frontDistance = frontDistanceMeasure();
-        backDistance = backDistanceMeasure();
-        moveForward();
         detectWall();
+        back();
+        adjustright();
         park();
-        moveOut();
+        adjustleft();
+        //stay in the spot for 1000ms.
         stop();
+        delay(1000);
+        //move out of the spot.
+        adjustright();
+        moveForward();
+        delay(500);
+        adjustleft();
+        moveForward();
+        delay(50000);
 }

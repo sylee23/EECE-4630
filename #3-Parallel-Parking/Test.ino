@@ -11,14 +11,11 @@ int ENL = 11;
 //speed of the motor.
 int SPD = 115;
 //distance sensor, OUT to send the wave, IN to receive.
-int frontOUT = A5;
-int frontIN = A4;
 int leftOUT = A3;
 int leftIN = A2;
 int backOUT = A1;
 int backIN = A0;
 //initials for the distance.
-int frontDistance = 0;
 int leftDistance = 0;
 int backDistance = 0;
 //function to move forward.
@@ -67,18 +64,6 @@ void stop()
         digitalWrite(ENR, LOW);
         digitalWrite(ENL, LOW);
 }
-//function to measure front distance.
-int frontDistanceMeasure()
-{
-        digitalWrite(frontOUT, LOW);
-        delayMicroseconds(2);
-        digitalWrite(frontOUT, HIGH);
-        delayMicroseconds(10);
-        digitalWrite(frontOUT, LOW);
-        float fDistance = pulseIn(frontIN, HIGH);
-        fDistance = fDistance / 58;
-        return (int)fDistance;
-}
 //function to measure left distance.
 int leftDistanceMeasure()
 {
@@ -113,8 +98,6 @@ void setup()
         pinMode(LT2, OUTPUT);
         pinMode(ENR, OUTPUT);
         pinMode(ENL, OUTPUT);
-        pinMode(frontOUT, OUTPUT);
-        pinMode(frontIN, INPUT);
         pinMode(leftOUT, OUTPUT);
         pinMode(leftIN, INPUT);
         pinMode(backOUT, OUTPUT);
@@ -126,23 +109,14 @@ void loop()
 {
         //get the detection.
         leftDistance = leftDistanceMeasure();
-        frontDistance = frontDistanceMeasure();
         backDistance = backDistanceMeasure();
         if (leftDistance < 10)
-        {
-                turnLeft();
-        }
-        if (frontDistance < 10)
         {
                 moveBackward();
         }
         if (backDistance < 10)
         {
                 stop();
-        }
-        if (leftDistance < 10 && frontDistance < 10 && backDistance < 10)
-        {
-                turnRight();
         }
         else
         {
